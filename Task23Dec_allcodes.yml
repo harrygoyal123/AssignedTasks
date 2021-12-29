@@ -1,0 +1,30 @@
+#ansible-playbook task3.yml
+---
+ - name: Running both roles to create directory and to check if it exists
+   hosts: web
+   become: yes
+   roles:
+     - name: test-role-0
+     - name: test-role-1
+
+
+#Roles --> test-role-0 --> tasks --> main.yml
+---
+# tasks file for test-role-0
+ - name: Create a Directory in server
+   file:
+     path: /tmp/hello_directory
+     state: directory
+
+
+#Roles --> test-role-2 --> tasks --> main.yml
+---
+# tasks file for test-role-1
+ - name: Check existence of directory
+   stat:
+     path: /tmp/hello_directory
+   register: file_details
+ - debug:
+     msg: "The directory exists"
+   when: file_details.stat.exists
+
